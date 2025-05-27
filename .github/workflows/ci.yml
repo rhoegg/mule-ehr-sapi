@@ -44,6 +44,11 @@ jobs:
           java-version: '17'
           distribution: zulu
           cache: maven
+      - name: Publish to Exchange
+        run: mvn deploy --settings .github/settings.xml
+        env:
+          CONNECTED_APP_CLIENT_ID: ${{ vars.CONNECTED_APP_CLIENT_ID }}
+          CONNECTED_APP_CLIENT_SECRET: ${{ secrets.CONNECTED_APP_CLIENT_SECRET }}
       - name: Deploy to CloudHub 2.0
         run: |
           mvn clean deploy -DmuleDeploy \
