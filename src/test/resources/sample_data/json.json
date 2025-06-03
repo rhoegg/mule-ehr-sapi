@@ -1,0 +1,30 @@
+{
+  "emergencyResponseId": 45672,
+  "chiefComplaint": "65-year-old male experiencing chest pain and shortness of breath. Patient reports pain radiating to left arm. Wife called 911 after patient collapsed at home.",
+  "estimatedArrival": "2025-06-03T15:45:00Z",
+  "triagePriority": "P1_CRITICAL",
+  "vehicle": {
+    "id": 237,
+    "type": "ambulance"
+  },
+  "paramedicNotes": "Patient conscious and responsive. Administered oxygen and established IV access. EKG shows ST elevation in leads II, III, aVF suggesting inferior wall MI. Patient denies drug allergies. Blood glucose 145 mg/dL. Transport time estimated 12 minutes.",
+  "patient": {
+    "firstName": "Robert",
+    "lastName": "Thompson",
+    "dateOfBirth": "1959-08-15",
+    "gender": "Male",
+    "medicalHistory": "Hypertension, Type 2 diabetes, previous myocardial infarction (2018)",
+    "allergies": ["Penicillin", "Shellfish"],
+    "medications": ["Metformin 500mg", "Lisinopril 10mg", "Atorvastatin 20mg", "Aspirin 81mg"]
+  },
+  "vitals": {
+    "heartRate": 110,
+    "bloodPressure": {
+      "systolic": 95,
+      "diastolic": 60
+    },
+    "bloodOxygen": 94.5,
+    "temperature": 36.8,
+    "respiratoryRate": 22
+  }
+}

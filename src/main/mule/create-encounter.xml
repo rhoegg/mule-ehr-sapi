@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="createEncounter" doc:id="aa1cafab-1be4-4dec-b138-a123c3c719e6" >
+		<ee:transform doc:name="create SOAP request" doc:id="b7a28ca5-4158-4afa-a875-b74fda34d70c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns soap http://ehr.secondssave.com/soap
+
+fun toEhrList(items: Array<String>): String = if (isEmpty(items)) "None known"
+	else items joinBy ", "
+
+var patient = payload.patient
+var vitals = payload.vitals
+var allergies: String = toEhrList(patient.allergies)
+var medications: String = toEhrList(patient.medications)
+---
+{
+	soap#createEncounterRequest: {
+		emergencyResponseId: payload.emergencyResponseId,
+		patientData: {
+			firstName: patient.firstName,
+			lastName: patient.lastName,
+			dateOfBirth: patient.dateOfBirth,
+			gender: patient.gender,
+			medicalHistory: patient.medicalHistory,
+			allergies: allergies,
+			medications: medications,
+		},
+		vitalSigns: {
+			heartRate: vitals.heartRate,
+			bloodPressureSystolic: vitals.bloodPressure.systolic,
+			bloodPressureDiastolic: vitals.bloodPressure.diastolic,
+			bloodOxygen: vitals.bloodOxygen,
+			temperature: vitals.temperature,
+			respiratoryRate: vitals.respiratoryRate
+		},
+		chiefComplaint: payload.chiefComplaint,
+		estimatedArrival: payload.estimatedArrival,
+		triagePriority: payload.triagePriority,
+		vehicleIdentifier: payload.vehicle.id,
+		transportMode: payload.vehicle."type",
+		paramedicNotes: payload.paramedicNotes
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="createEncounter" doc:id="a8cf23da-1b84-407f-9a8d-999b003e50bf" config-ref="Web_Service_Consumer_Config" operation="createEncounter"/>
+		<logger level="INFO" doc:name="Logger" doc:id="1ac53911-c122-4c52-9b60-8d98580e0602" message="#[payload]"/>
+		<ee:transform doc:name="create JSON response" doc:id="2742262d-f670-4051-afc5-2690b361979c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/dw
+---
+7]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

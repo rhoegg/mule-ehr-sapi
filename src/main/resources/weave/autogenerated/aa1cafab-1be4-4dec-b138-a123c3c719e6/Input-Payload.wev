@@ -1,0 +1,38 @@
+%dw 2.0
+
+type auto_aa1cafab_1be4_4dec_b138_a123c3c719e6_Input_Payload = {
+  triagePriority: "P1_CRITICAL" | "P3_MEDIUM" | "P4_LOW" | "P2_HIGH" | "P5_NON_URGENT", 
+  paramedicNotes: String, 
+  patient: {
+    allergies: Array<String>, 
+    firstName?: String, 
+    lastName?: String, 
+    gender?: String, 
+    medications: Array<String>, 
+    dateOfBirth?: String, 
+    medicalHistory?: String, 
+    _?: Any
+  }, 
+  emergencyResponseId: Number, 
+  estimatedArrival: String, 
+  chiefComplaint: String, 
+  vitals: {
+    bloodPressure: {
+      systolic: Number, 
+      diastolic: Number, 
+      _?: Any
+    }, 
+    bloodOxygen: Number, 
+    heartRate: Number, 
+    respiratoryRate: Number, 
+    temperature: Number, 
+    _?: Any
+  }, 
+  vehicle: {
+    id: Number, 
+    "type": "helicopter" | "ambulance", 
+    _?: Any
+  }, 
+  _?: Any
+}
+

@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
     <http:listener-config name="httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
 	<global-property doc:name="Global Property" doc:id="6a4bc1aa-e242-4ce5-9b1c-959c63b01291" name="mule.env" value="local" />
 	<configuration-properties doc:name="Configuration properties" doc:id="0676c2ee-054d-47c2-a110-5ab954fcba80" file="config/${mule.env}.yaml" />
 	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="b2392395-2809-4006-a344-8d248996b2da" flowRef="ehr-system-api-main" />
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="429a003a-c758-41ec-9a7a-0a7814e9fd44" >
+		<wsc:connection wsdlLocation="https://steel-city-memorial.ehr.secondssave.com/soap/facilityEhr?wsdl" service="FacilityEhrService" port="FacilityEhrServicePort" address="https://steel-city-memorial.ehr.secondssave.com/soap/facilityEhr" >
+			<wsc:web-service-security >
+				<wsc:username-token-security-strategy username="${ehr.username}" password="${ehr.password}" />
+			</wsc:web-service-security>
+		</wsc:connection>
+	</wsc:config>
 </mule>
