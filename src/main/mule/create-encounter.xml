@@ -45,7 +45,8 @@ var medications: String = toEhrList(patient.medications)
 		triagePriority: payload.triagePriority,
 		vehicleIdentifier: payload.vehicle.id,
 		transportMode: payload.vehicle."type",
-		paramedicNotes: payload.paramedicNotes
+		paramedicNotes: payload.paramedicNotes,
+		encounterType: "emergency"
 	}
 }]]></ee:set-payload>
 			</ee:message>
@@ -55,9 +56,17 @@ var medications: String = toEhrList(patient.medications)
 		<ee:transform doc:name="create JSON response" doc:id="2742262d-f670-4051-afc5-2690b361979c" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/dw
+output application/json
+ns ns2 http://ehr.secondssave.com/soap
+var response = payload.body.ns2#createEncounterResponse
+var actions = response.*recommendedActions
 ---
-7]]></ee:set-payload>
+{
+    encounterId: response.encounterId as Number,
+    patientId: response.patientId as Number,
+    status: response.status,
+    recommendedActions: actions
+}]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
