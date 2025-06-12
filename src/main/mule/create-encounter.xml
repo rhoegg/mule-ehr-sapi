@@ -46,7 +46,7 @@ var medications: String = toEhrList(patient.medications)
 		vehicleIdentifier: payload.vehicle.id,
 		transportMode: payload.vehicle."type",
 		paramedicNotes: payload.paramedicNotes,
-		encounterType: "emergency"
+		encounterType: payload.encounterType
 	}
 }]]></ee:set-payload>
 			</ee:message>
