@@ -48,6 +48,7 @@
 						</properties>
 						<secureProperties>
 							<anypoint.platform.client_secret>${anypoint.platform.client_secret}</anypoint.platform.client_secret>
+							<ehr.password>${ehr.password}</ehr.password>
 						</secureProperties>
 					</cloudhub2Deployment>
 					<classifier>mule-application</classifier>
