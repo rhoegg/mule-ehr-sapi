@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+	<sub-flow name="updateVitals" doc:id="41147b51-bb19-4566-a33c-29d4f3a3a33c" >
+		<ee:transform doc:name="create SOAP request" doc:id="be3848dc-37e3-4768-b23a-857eeb9e8dc4" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns2 http://ehr.secondssave.com/soap
+---
+ns2#updatePatientVitalsRequest: {
+	encounterId: vars.encounterId,
+	vitalSigns: {
+		heartRate: payload.vitals.heartRate,
+		bloodPressureSystolic: payload.vitals.bloodPressure.systolic,
+		bloodPressureDiastolic: payload.vitals.bloodPressure.diastolic,
+		bloodOxygen: payload.vitals.bloodOxygen,
+		temperature: payload.vitals.temperature,
+		respiratoryRate: payload.vitals.respiratoryRate
+	},
+	(deviceId: payload.device.id) if payload.device.id?,
+	recordedAt: now() >> "UTC"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="updatePatientVitals" doc:id="edc6b426-2767-498c-9264-14ab255e1b6b" config-ref="Web_Service_Consumer_Config" operation="updatePatientVitals"/>
+		<logger level="DEBUG" doc:name="DEBUG" doc:id="d69d9fc1-7056-4445-9c25-69102f25549f" message="#[output application/json --- payload]"/>
+		<ee:transform doc:name="create JSON response" doc:id="b7af7b80-00c8-4138-a29c-74c665bff46b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns2 http://ehr.secondssave.com/soap
+
+var response = payload.body.ns2#updatePatientVitalsResponse
+var summaries = response.*vitalSignsSummary
+
+fun transformVitals(summary) = do { // do keyword defines local scope
+		var vitals = summary.vitalSigns
+		---
+		{ // object constructor
+			heartRate: vitals.heartRate as Number,
+			bloodPressure: {
+				systolic: vitals.bloodPressureSystolic as Number,
+				diastolic: vitals.bloodPressureDiastolic as Number,
+			},
+			bloodOxygen: vitals.bloodOxygen as Number,
+			temperature: vitals.temperature as Number,
+			respiratoryRate: vitals.respiratoryRate as Number
+		}
+	}
+
+var vitalSigns = summaries map (summary) -> 
+	{
+		id: summary.vitalSignsId as Number,
+		source: summary.source,
+		recorded: summary.recordedAt,
+		(device: {
+			id: summary.deviceId as Number
+		}) if summary.source == "device",
+		vitals: transformVitals(summary)
+	}
+---
+{
+	id: response.vitalSignsId as Number,
+	vitalSigns: vitalSigns
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

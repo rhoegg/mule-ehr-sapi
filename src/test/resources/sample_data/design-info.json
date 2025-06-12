@@ -3,6 +3,13 @@
     "2742262d-f670-4051-afc5-2690b361979c": {},
     "b7a28ca5-4158-4afa-a875-b74fda34d70c": {
       "payload": "sample_data/json.json"
+    },
+    "be3848dc-37e3-4768-b23a-857eeb9e8dc4": {
+      "vars-encounterId": "sample_data/defaultnumbertype.dwl",
+      "payload": "sample_data/json_1.json"
+    },
+    "b7af7b80-00c8-4138-a29c-74c665bff46b": {
+      "payload": "sample_data/java.dwl"
     }
   }
 }
