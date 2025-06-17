@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	<configuration-properties doc:name="Configuration properties" doc:id="0676c2ee-054d-47c2-a110-5ab954fcba80" file="config/${mule.env}.yaml" />
 	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="b2392395-2809-4006-a344-8d248996b2da" flowRef="ehr-system-api-main" />
 	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="429a003a-c758-41ec-9a7a-0a7814e9fd44" >
-		<wsc:connection wsdlLocation="https://steel-city-memorial.ehr.secondssave.com/soap/facilityEhr?wsdl" service="FacilityEhrService" port="FacilityEhrServicePort" address="https://steel-city-memorial.ehr.secondssave.com/soap/facilityEhr" >
+		<wsc:connection wsdlLocation="facilityEhr.wsdl" service="FacilityEhrService" port="FacilityEhrServicePort" address='#["https://$(dw::utils::EHR::lookupEhrHostname(vars.facility))/soap/facilityEhr"]' >
 			<wsc:web-service-security >
 				<wsc:username-token-security-strategy username="${ehr.username}" password="${ehr.password}" />
 			</wsc:web-service-security>
